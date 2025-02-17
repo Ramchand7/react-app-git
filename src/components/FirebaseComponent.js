@@ -1,6 +1,18 @@
 import React from "react";
- import { initializeApp } from "firebase/app";
- import { getDatabase, ref, get } from "firebase/database"; // Realtime Database imports
+import { initializeApp } from "firebase/app";
+ 
+ import { getDatabase, ref, get , set} from "firebase/database"; // Realtime Database imports
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  GoogleAuthProvider, // Add this
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+  
+} from "firebase/auth";
 
  const firebaseConfig = {
    apiKey: "AIzaSyCA74jVzji_5c-o9QNpmATvWwp8Kk-eCDM",
@@ -14,4 +26,17 @@ import React from "react";
  const firebaseApp = initializeApp(firebaseConfig);
  const database = getDatabase(firebaseApp);
 
-export default { database, };
+export {
+  database,
+  ref,
+  get,
+  set,
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+};

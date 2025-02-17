@@ -1,11 +1,10 @@
 import React from "react";
 
-import database from "./FirebaseComponent";
+import { database, ref, get } from "./FirebaseComponent";
 class Questions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Use this.state, not this.setStat
       data: [],
     };
   }

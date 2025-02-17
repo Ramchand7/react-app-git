@@ -2,7 +2,7 @@ import React from "react";
 import Details from "./Details";
 import Question from "./Questions";
 import { v4 as uuid } from "uuid";
-import databse from "./FirebaseComponent";
+import { database, ref ,set} from "./FirebaseComponent";
 class Container extends React.Component {
   constructor(props) {
     super(props);
