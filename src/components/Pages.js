@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
-  Route,
   Routes,
+  Route,
   useNavigate,
 } from "react-router-dom";
 import { Nav } from "./webpage/Nav";
@@ -13,26 +13,96 @@ import { Header } from "./webpage/Header";
 import { Login } from "./Login";
 import { Register } from "./Register";
 import { ForgetPassword } from "./ForgetPassword";
-import {
-  database,
-  ref,
-  set,
-  get,
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut,
-} from "./FirebaseComponent";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import cookie from "js-cookie";
+import { Posts } from "./webpage/Posts";
+import { ToDo } from "./webpage/to-do";
+import { store } from "./store";
+import { Provider } from "react-redux";
+import { toolKitStore } from "./../store/store";
+import { AddUser } from "./webpage/addUser";
 
-// Separate component for protected routes that uses useNavigate
+// Main component that handles authentication state
+export function Pages() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    cookie.get("uid") ? true : false
+  );
+
+  // Firebase auth state listener for handling user sign-in/sign-out
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // If user is logged in, set the isAuthenticated state to true
+        setIsAuthenticated(true);
+        // Optionally store user info in cookies or local storage
+        cookie.set("uid", user.uid);
+      } else {
+        // If user is logged out, set isAuthenticated to false
+        setIsAuthenticated(false);
+        cookie.remove("uid");
+      }
+    });
+
+    // Clean up the listener on component unmount
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <>
+      <Router>
+        <Routes>
+          <Route
+            path="/:id?"
+            element={<ProtectedRoutes isAuthenticated={isAuthenticated} />}
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/posts/:id?"
+            element={
+              <>
+                <Header title="Post" />
+                <Posts />
+              </>
+            }
+          />
+          <Route
+            path="/todo"
+            element={
+              <>
+                <Header title="To Do" />
+                <Provider store={store}>
+                  <ToDo />
+                </Provider>
+              </>
+            }
+          />
+          <Route
+            path="/addUser"
+            element={
+              <>
+                <Provider store={toolKitStore}>
+                  <Header title="Add Users" />
+                  <AddUser />
+                </Provider>
+              </>
+            }
+          />
+
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="*" element={<Header title="404" />} />
+        </Routes>
+      </Router>
+    </>
+  );
+}
+
+// Protected routes component that wraps protected pages
 function ProtectedRoutes({ isAuthenticated }) {
   const navigate = useNavigate();
 
-   
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -69,39 +139,8 @@ function ProtectedRoutes({ isAuthenticated }) {
             )
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route
-          path="*"
-          element={
-            <>
-              <Header title="404" />
-            </>
-          }
-        />
       </Routes>
       <Footer />
     </>
-  );
-}
-
-// Main component that handles authentication state
-export function Pages() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const auth = getAuth();
-
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
-  }, [auth]);
-
-  return (
-    <Router>
-      <ProtectedRoutes isAuthenticated={isAuthenticated} />
-    </Router>
   );
 }

@@ -52,14 +52,28 @@ export function Nav(Props) {
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                  
-                 
                   <li class="nav-item">
                     <Link class="nav-link" to="/about">
                       About
                     </Link>
                   </li>
-                 
+                  <li class="nav-item">
+                    <Link class="nav-link" to="/posts">
+                      Posts
+                    </Link>
+                  </li>
+                  <li class="nav-item">
+                    <Link class="nav-link" to="/todo">
+                      ToDo
+                    </Link>
+                  </li>
+
+                  <li class="nav-item">
+                    <Link class="nav-link" to="/adduser">
+                      Add User
+                    </Link>
+                  </li>
+
                   {Props.authentication ? (
                     <li class="nav-item">
                       <a class="nav-link" onClick={handleLogout}>

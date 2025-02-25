@@ -17,6 +17,21 @@ body {
 header{
   height:56px;
 }
+.pagination {
+  display: flex;
+  gap:20px;
+  margin-top: 20px;
+}
+.feature-card-body *{
+  color:#000;
+}
+.posts a{
+  text-decoration: none;
+
+}
+.pagination{
+  cursor: pointer;
+}
 /* Form container */
 .form-container {
   background-color: #fff;
